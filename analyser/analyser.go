@@ -22,7 +22,7 @@ func (Analyser) Exec(s []monitor.Sympton) {
 	// instancia a requisição de mudança
 	change := ChangeRequest{
 		decision:         "NoChange",
-		semaphoresAfects: make([]int, constants.NumberSemaphores),
+		semaphoresAfects: []int{},
 	}
 	/*fmt.Println("Semáforo", 0, " tem o seguinte sintoma: ", s[0].CongestionRate)
 	fmt.Println("Semáforo", 1, " tem o seguinte sintoma: ", s[1].CongestionRate)
@@ -36,22 +36,23 @@ func (Analyser) Exec(s []monitor.Sympton) {
 	//idSemaphores := make([]int, constants.NumberSemaphores)
 
 	// contabiliza os semáforos com baixo, médio e intenso congestionamento
-	for i, sympton := range s {
+	for _, sympton := range s {
 		switch {
 		case sympton.CongestionRate == "low":
 			numLow++
 		case sympton.CongestionRate == "medium":
 			numMedium++
-			change.semaphoresAfects[i] = sympton.SemaphoreID
+			change.semaphoresAfects = append(change.semaphoresAfects, sympton.SemaphoreID)
 		case sympton.CongestionRate == "intensive":
 			numIntensive++
-			change.semaphoresAfects[i] = sympton.SemaphoreID
+			change.semaphoresAfects = append(change.semaphoresAfects, sympton.SemaphoreID)
 		}
 	}
 
 	fmt.Println("O número de low:", numLow)
 	fmt.Println("O número de medium:", numMedium)
 	fmt.Println("O número de intensive:", numIntensive)
+	fmt.Println("Os semáforos afetados foram:", change.semaphoresAfects)
 
 	// calcula a porcentagem de semáforos com congestionamento médio ou intenso
 	totalCongestion := numMedium + numIntensive
