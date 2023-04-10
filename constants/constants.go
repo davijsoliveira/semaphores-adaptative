@@ -1,6 +1,6 @@
 package constants
 
-// Goal
+// Goal - LowCongestion / MediumCongestion / IntensiveCongestion
 const Goal = "LowCongestion"
 
 // default time for colors
@@ -12,7 +12,12 @@ const DefaultRed = 60
 const DefaultTraffic = 21
 
 // Semaphores Number
-const NumberSemaphores = 3
+const TrafficSignalNumber = 3
 
 // Max Traffic
 const MaxTraffic = 30
+
+// Symptoms
+const Low = "low"
+const Medium = "medium"
+const Intense = "intense"

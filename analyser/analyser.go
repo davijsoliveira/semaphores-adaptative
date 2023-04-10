@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"semaphores-adaptative/constants"
+	"semaphores-adaptative/controller/knowledge"
 	"semaphores-adaptative/controller/monitor"
 )
 
@@ -33,17 +34,17 @@ func (Analyser) Exec(s []monitor.Sympton) {
 	numIntensive := 0
 
 	// inicializa um slice para contabilizar os semáforos
-	//idSemaphores := make([]int, constants.NumberSemaphores)
+	//idSemaphores := make([]int, constants.TrafficSignalNumber)
 
 	// contabiliza os semáforos com baixo, médio e intenso congestionamento
 	for _, sympton := range s {
 		switch {
-		case sympton.CongestionRate == "low":
+		case sympton.CongestionRate == constants.Low:
 			numLow++
-		case sympton.CongestionRate == "medium":
+		case sympton.CongestionRate == constants.Medium && knowledge.KnowledgeDB.LastSemaphoreSymptom[sympton.SemaphoreID] != constants.Intense:
 			numMedium++
 			change.semaphoresAfects = append(change.semaphoresAfects, sympton.SemaphoreID)
-		case sympton.CongestionRate == "intensive":
+		case sympton.CongestionRate == constants.Intense && knowledge.KnowledgeDB.LastSemaphoreSymptom[sympton.SemaphoreID] != constants.Intense:
 			numIntensive++
 			change.semaphoresAfects = append(change.semaphoresAfects, sympton.SemaphoreID)
 		}
@@ -56,7 +57,7 @@ func (Analyser) Exec(s []monitor.Sympton) {
 
 	// calcula a porcentagem de semáforos com congestionamento médio ou intenso
 	totalCongestion := numMedium + numIntensive
-	percentCongestion := math.Round((float64(totalCongestion) * float64(100)) / float64(constants.NumberSemaphores))
+	percentCongestion := math.Round((float64(totalCongestion) * float64(100)) / float64(constants.TrafficSignalNumber))
 
 	switch constants.Goal {
 	case "LowCongestion":

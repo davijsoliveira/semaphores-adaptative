@@ -3,7 +3,6 @@ package monitor
 import (
 	"fmt"
 	"semaphores-adaptative/constants"
-	"semaphores-adaptative/controller/knowledge"
 	"semaphores-adaptative/traffic"
 	"time"
 )
@@ -28,27 +27,27 @@ func (Monitor) Exec(flow *traffic.TrafficFlow) []Sympton {
 	// data collect
 	trafficFlowRate := flow.Sense()
 
-	Symptoms := make([]Sympton, constants.NumberSemaphores)
-
-	for i := 0; i < constants.NumberSemaphores; i++ {
+	Symptoms := make([]Sympton, constants.TrafficSignalNumber)
+	// Gera o sintoma, verificando os semáforos que tem tráfego baixo/médio/intenso
+	for i := 0; i < constants.TrafficSignalNumber; i++ {
 		//fmt.Println("Trafego do semáforo", i, ": ", trafficFlowRate.TrafficPerSemaphore[i])
 		//fmt.Println("O último sintoma do semáforo", i, " é: ", knowledge.KnowledgeDB.LastSemaphoreSymptom[i])
 		switch {
 		case trafficFlowRate.TrafficPerSemaphore[i] <= 10:
 			Symptoms[i].SemaphoreID = i
 			Symptoms[i].CurrentRate = trafficFlowRate.TrafficPerSemaphore[i]
-			Symptoms[i].CongestionRate = "low"
-			knowledge.KnowledgeDB.LastSemaphoreSymptom[i] = "low"
+			Symptoms[i].CongestionRate = constants.Low
+			//knowledge.KnowledgeDB.LastSemaphoreSymptom[i] = constants.Low
 		case trafficFlowRate.TrafficPerSemaphore[i] <= 20 && trafficFlowRate.TrafficPerSemaphore[i] > 10:
 			Symptoms[i].SemaphoreID = i
 			Symptoms[i].CurrentRate = trafficFlowRate.TrafficPerSemaphore[i]
-			Symptoms[i].CongestionRate = "medium"
-			knowledge.KnowledgeDB.LastSemaphoreSymptom[i] = "medium"
+			Symptoms[i].CongestionRate = constants.Medium
+			//knowledge.KnowledgeDB.LastSemaphoreSymptom[i] = constants.Medium
 		case trafficFlowRate.TrafficPerSemaphore[i] <= 30 && trafficFlowRate.TrafficPerSemaphore[i] > 20:
 			Symptoms[i].SemaphoreID = i
 			Symptoms[i].CurrentRate = trafficFlowRate.TrafficPerSemaphore[i]
-			Symptoms[i].CongestionRate = "intensive"
-			knowledge.KnowledgeDB.LastSemaphoreSymptom[i] = "intensive"
+			Symptoms[i].CongestionRate = constants.Intense
+			//knowledge.KnowledgeDB.LastSemaphoreSymptom[i] = constants.Intense
 		}
 
 		//fmt.Println("Semáforo", i, " tem o seguinte sintoma atual: ", knowledge.KnowledgeDB.LastSemaphoreSymptom[i])

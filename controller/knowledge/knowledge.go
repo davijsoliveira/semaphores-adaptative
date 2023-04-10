@@ -9,9 +9,9 @@ type Knowledge struct {
 var KnowledgeDB = NewKnowledge()
 
 func NewKnowledge() *Knowledge {
-	k := make(map[int]string, constants.NumberSemaphores)
+	k := make(map[int]string, constants.TrafficSignalNumber)
 	knw := Knowledge{k}
-	for i := 0; i < constants.NumberSemaphores; i++ {
+	for i := 0; i < constants.TrafficSignalNumber; i++ {
 		knw.LastSemaphoreSymptom[i] = "low"
 	}
 	return &knw

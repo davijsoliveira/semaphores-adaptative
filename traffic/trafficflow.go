@@ -13,7 +13,7 @@ type TrafficFlow struct {
 func NewTrafficFlow(num int) *TrafficFlow {
 	t := make([]int, num)
 	tf := TrafficFlow{TrafficPerSemaphore: t}
-	for i, _ := range tf.TrafficPerSemaphore {
+	for i := range tf.TrafficPerSemaphore {
 		tf.TrafficPerSemaphore[i] = constants.DefaultTraffic
 	}
 	return &tf
@@ -21,7 +21,7 @@ func NewTrafficFlow(num int) *TrafficFlow {
 
 func (t *TrafficFlow) Exec() {
 	for {
-		for i := 0; i < constants.NumberSemaphores; i++ {
+		for i := 0; i < constants.TrafficSignalNumber; i++ {
 			time.Sleep(10 * time.Second)
 			rand.Seed(time.Now().UnixNano())
 			jam := rand.Intn(constants.MaxTraffic)

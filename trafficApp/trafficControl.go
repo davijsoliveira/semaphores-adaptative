@@ -11,7 +11,7 @@ import (
 	"semaphores-adaptative/constants"
 )
 
-type Semaphore struct {
+type TrafficSignal struct {
 	Id         int
 	TimeGreen  int
 	TimeYellow int
@@ -19,34 +19,34 @@ type Semaphore struct {
 	TrafficJam int
 }
 
-type SemaphoreSystem struct {
-	Semaphores []Semaphore
+type TrafficSignalSystem struct {
+	Semaphores []TrafficSignal
 }
 
-func NewSemaphore(id int) Semaphore {
-	s := Semaphore{Id: id, TimeGreen: constants.DefaultGreen, TimeYellow: constants.DefaultYellow, TimeRed: constants.DefaultRed}
+func NewTrafficSignal(id int) TrafficSignal {
+	s := TrafficSignal{Id: id, TimeGreen: constants.DefaultGreen, TimeYellow: constants.DefaultYellow, TimeRed: constants.DefaultRed}
 
 	return s
 }
 
-/*func NewSemaphoreSystem(num int) *[]Semaphore {
-	system := make([]Semaphore, num)
+/*func NewSemaphoreSystem(num int) *[]TrafficSignal {
+	system := make([]TrafficSignal, num)
 	for i := 0; i < num; i++ {
-		system[i] = NewSemaphore(i)
+		system[i] = NewTrafficSignal(i)
 	}
 	return &system
 }*/
 
-func NewSemaphoreSystem(num int) *SemaphoreSystem {
-	s := make([]Semaphore, num)
-	system := SemaphoreSystem{Semaphores: s}
+func NewSemaphoreSystem(num int) *TrafficSignalSystem {
+	s := make([]TrafficSignal, num)
+	system := TrafficSignalSystem{Semaphores: s}
 	for i := 0; i < num; i++ {
-		system.Semaphores[i] = NewSemaphore(i)
+		system.Semaphores[i] = NewTrafficSignal(i)
 	}
 	return &system
 }
 
-func (s *SemaphoreSystem) Exec(changes map[int][]int) {
+func (s *TrafficSignalSystem) Exec(changes map[int][]int) {
 	//for {
 	for k, v := range changes {
 		adaptation := v
@@ -61,8 +61,8 @@ func (s *SemaphoreSystem) Exec(changes map[int][]int) {
 			}
 		}
 
-		//fmt.Println("Semaphore ID:", s.Semaphores[i].Id, "Green:", s.Semaphores[i].TimeGreen, "Yellow:", s.Semaphores[i].TimeYellow, "Red:", s.Semaphores[i].TimeRed)
-		//= Semaphore  {TimeGreen: timeGreen, TimeYellow: timeYellow, TimeRed: timeRed}
+		//fmt.Println("TrafficSignal ID:", s.Semaphores[i].Id, "Green:", s.Semaphores[i].TimeGreen, "Yellow:", s.Semaphores[i].TimeYellow, "Red:", s.Semaphores[i].TimeRed)
+		//= TrafficSignal  {TimeGreen: timeGreen, TimeYellow: timeYellow, TimeRed: timeRed}
 	}
 
 	//}

@@ -12,10 +12,10 @@ import (
 func main() {
 
 	// instantiate semaphore system
-	semSystem := semaphore_app.NewSemaphoreSystem(constants.NumberSemaphores)
+	semSystem := semaphore_app.NewSemaphoreSystem(constants.TrafficSignalNumber)
 	for _, v := range semSystem.Semaphores {
 		fmt.Println("########################### INITIAL VALUES OF SEMAPHORES ############################################")
-		fmt.Println("Semaphore ID:", v.Id, "Green:", v.TimeGreen, "Yellow:", v.TimeYellow, "Red:", v.TimeRed)
+		fmt.Println("TrafficSignal ID:", v.Id, "Green:", v.TimeGreen, "Yellow:", v.TimeYellow, "Red:", v.TimeRed)
 		fmt.Println("#####################################################################################################")
 	}
 
@@ -28,19 +28,19 @@ func main() {
 
 	for _, v := range semSystem.Semaphores {
 		fmt.Println("########################### CHANGED VALUES OF SEMAPHORES ############################################")
-		fmt.Println("Semaphore ID:", v.Id, "Green:", v.TimeGreen, "Yellow:", v.TimeYellow, "Red:", v.TimeRed)
+		fmt.Println("TrafficSignal ID:", v.Id, "Green:", v.TimeGreen, "Yellow:", v.TimeYellow, "Red:", v.TimeRed)
 		fmt.Println("#####################################################################################################")
 	}*/
 
 	// instantiate traffic flow
-	trafFlow := traffic.NewTrafficFlow(constants.NumberSemaphores)
+	trafFlow := traffic.NewTrafficFlow(constants.TrafficSignalNumber)
 	mon := monitor.NewMonitor()
 	anl := analyser.NewAnalyser()
 	m := mon.Exec(trafFlow)
 	anl.Exec(m)
 	/*for i, v := range trafFlow.TrafficPerSemaphore {
 		fmt.Println("########################### INITIAL VALUES BY TRAFFIC### ############################################")
-		fmt.Println("Semaphore ID:", i, "Jam:", v)
+		fmt.Println("TrafficSignal ID:", i, "Jam:", v)
 		fmt.Println("#####################################################################################################")
 
 	}
@@ -48,7 +48,7 @@ func main() {
 	/*t := trafFlow.Sense()
 	fmt.Println("########################### VALUES BY TRAFFIC########################################################")
 	for i, v := range t.TrafficPerSemaphore {
-		fmt.Println("Semaphore ID:", i, "Jam:", v)
+		fmt.Println("TrafficSignal ID:", i, "Jam:", v)
 	}
 	fmt.Println("#####################################################################################################")
 	*/
