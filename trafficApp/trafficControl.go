@@ -1,7 +1,7 @@
 /*
 ************************************************************************************************************************************************
 Author: Davi Oliveira
-Description: This code implements a simple app for semaphores time control. The time of the semphores may change according to the traffic flow.
+Description: This code implements a simple app for traffic signal timing control. The time of the signal traffic may change according to the traffic flow.
 Date: 06/03/2023
 ************************************************************************************************************************************************
 */
@@ -54,13 +54,13 @@ func NewTrafficSignalSystem(num int) *TrafficSignalSystem {
 // executa o sistema de semáforos
 // func (s *TrafficSignalSystem) Exec(changes map[int][]int) {
 func (s *TrafficSignalSystem) Exec(changes []TrafficSignal) {
+	// itera sobre os semáforos alterados e os pertencentes ao sistema para aplicar as alterações
 	for _, signalsChange := range changes {
-		for _, signals := range s.TrafficSignals {
+		for j, signals := range s.TrafficSignals {
 			if signalsChange.Id == signals.Id {
-				fmt.Println("Entrou aqui!!!!!!!!!!!")
-				signals.TimeGreen = signalsChange.TimeGreen
-				signals.TimeYellow = signalsChange.TimeYellow
-				signals.TimeRed = signalsChange.TimeRed
+				s.TrafficSignals[j].TimeGreen = signalsChange.TimeGreen
+				s.TrafficSignals[j].TimeYellow = signalsChange.TimeYellow
+				s.TrafficSignals[j].TimeRed = signalsChange.TimeRed
 			}
 
 		}
@@ -69,8 +69,8 @@ func (s *TrafficSignalSystem) Exec(changes []TrafficSignal) {
 		fmt.Println("TrafficSignal ID:", s.TrafficSignals[i].Id, "Green:", s.TrafficSignals[i].TimeGreen, "Yellow:", s.TrafficSignals[i].TimeYellow, "Red:", s.TrafficSignals[i].TimeRed)
 	}
 
-	//for {
-	/*for k, v := range changes {
+	/*for {
+	for k, v := range changes {
 	adaptation := v
 	for z := 0; z < len(adaptation); z++ {
 		switch {
@@ -81,11 +81,8 @@ func (s *TrafficSignalSystem) Exec(changes []TrafficSignal) {
 		case z == 2:
 			s.TrafficSignals[k].TimeRed = adaptation[z]
 		}
+	}
+	}
+
 	}*/
-
-	//fmt.Println("TrafficSignal ID:", s.TrafficSignals[i].Id, "Green:", s.TrafficSignals[i].TimeGreen, "Yellow:", s.TrafficSignals[i].TimeYellow, "Red:", s.TrafficSignals[i].TimeRed)
-	//= TrafficSignal  {TimeGreen: timeGreen, TimeYellow: timeYellow, TimeRed: timeRed}
-	//}
-
-	//}
 }
