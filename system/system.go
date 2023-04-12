@@ -3,6 +3,11 @@ package main
 import (
 	//"fmt"
 	"semaphores-adaptative/constants"
+	"semaphores-adaptative/controller/analyser"
+	"semaphores-adaptative/controller/executor"
+	"semaphores-adaptative/controller/monitor"
+	"semaphores-adaptative/controller/planner"
+	"semaphores-adaptative/trafficApp"
 	"sync"
 
 	/*"semaphores-adaptative/controller/analyser"
@@ -14,28 +19,31 @@ import (
 )
 
 func main() {
-
-	// instantiate semaphore system
-	/*trafSystem := trafficApp.NewTrafficSignalSystem(constants.TrafficSignalNumber)
-	for _, v := range trafSystem.TrafficSignals {
-		fmt.Println("########################### INITIAL VALUES OF SEMAPHORES ############################################")
-		fmt.Println("TrafficSignal ID:", v.Id, "Green:", v.TimeGreen, "Yellow:", v.TimeYellow, "Red:", v.TimeRed)
-		fmt.Println("#####################################################################################################")
-	}*/
+	// variável wait group para controlar as go routines
 	var wg sync.WaitGroup
-	// instantiate traffic flow
+
+	// cria os canais
+	appToMonitor := make(chan []trafficApp.TrafficSignal)
+	monitorToAnalyser := make(chan []monitor.Symptom)
+	analyserToPlanner := make(chan analyser.ChangeRequest)
+	plannerToExecute := make(chan planner.Plan)
+	executeToApp := make(chan []trafficApp.TrafficSignal)
+
+	// instancia a app e o componentes do mape-k
 	trafFlow := traffic.NewTrafficFlow(constants.TrafficSignalNumber)
-	wg.Add(1)
-	trafFlow.Exec()
-	wg.Wait()
-	/*mon := monitor.NewMonitor()
+	trafSystem := trafficApp.NewTrafficSignalSystem(constants.TrafficSignalNumber)
+	mon := monitor.NewMonitor()
 	anl := analyser.NewAnalyser()
 	pln := planner.NewPlanner()
 	exc := executor.NewExecutor()
-	m := mon.Exec(trafFlow)
-	cr := anl.Exec(m)
-	plan := pln.Exec(cr, trafSystem)
-	changeSignals := exc.Exec(plan)
-	trafSystem.Exec(changeSignals)*/
 
+	// executa os componentes
+	wg.Add(6)
+	go trafFlow.Exec()
+	go trafSystem.Exec(appToMonitor, executeToApp)
+	go mon.Exec(appToMonitor, monitorToAnalyser, trafFlow)
+	go anl.Exec(monitorToAnalyser, analyserToPlanner)
+	go pln.Exec(analyserToPlanner, plannerToExecute, trafSystem)
+	go exc.Exec(plannerToExecute, executeToApp)
+	wg.Wait()
 }

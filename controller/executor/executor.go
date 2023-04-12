@@ -14,6 +14,10 @@ func NewExecutor() *Executor {
 }
 
 // repassa para a aplicação os semáforos que devem ter seu tempo alterado
-func (Executor) Exec(p planner.Plan) []trafficApp.TrafficSignal {
-	return p.TrafficSignals
+func (Executor) Exec(fromPlanner chan planner.Plan, toTrafficApp chan []trafficApp.TrafficSignal) {
+	for {
+		p := <-fromPlanner
+		toTrafficApp <- p.TrafficSignals
+
+	}
 }
