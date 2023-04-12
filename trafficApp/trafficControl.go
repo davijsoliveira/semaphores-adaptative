@@ -26,7 +26,7 @@ type TrafficSignalSystem struct {
 	TrafficSignals []TrafficSignal
 }
 
-// cria um conjunto de semáforos
+// instancia um semáforo
 func NewTrafficSignal(id int) TrafficSignal {
 	s := TrafficSignal{Id: id, TimeGreen: constants.DefaultGreen, TimeYellow: constants.DefaultYellow, TimeRed: constants.DefaultRed}
 
@@ -40,8 +40,8 @@ func NewTrafficSignal(id int) TrafficSignal {
 	}
 	return &system
 }*/
-//var TrafficSystem = NewTrafficSignalSystem(constants.TrafficSignalNumber)
-// cria um sistema de semáforos
+
+// instancia um sistema de semáforos
 func NewTrafficSignalSystem(num int) *TrafficSignalSystem {
 	s := make([]TrafficSignal, num)
 	system := TrafficSignalSystem{TrafficSignals: s}

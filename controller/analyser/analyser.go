@@ -11,23 +11,35 @@ import (
 // tipo analisador
 type Analyser struct{}
 
-// tipo requisição de mudança: contêm a decisão e os semáforos que devem sofrer adaptação no seu tempo
+// tipo requisição de mudança: contêm a decisão e os semáforos que devem sofrer adaptação
 type ChangeRequest struct {
 	Decision          string
 	Congestion        float64
 	SemaphoresAffects []int
 }
 
-func NewAnalyser() *Analyser {
-	return &Analyser{}
-}
-
-func (Analyser) Exec(s []monitor.Sympton) ChangeRequest {
-	// instancia a requisição de mudança
+func NewChangeRequest() *ChangeRequest {
 	change := ChangeRequest{
 		Decision:          "NoChange",
 		SemaphoresAffects: []int{},
 	}
+	return &change
+}
+
+// instancia um analisador
+func NewAnalyser() *Analyser {
+	return &Analyser{}
+}
+
+// executa o analisador, recebendo os sintomas e decidindo se é necessário realizar a adaptação
+func (Analyser) Exec(s []monitor.Symptom) ChangeRequest {
+
+	/*change := ChangeRequest{
+		Decision:          "NoChange",
+		SemaphoresAffects: []int{},
+	}*/
+	// instancia a requisição de mudança
+	change := NewChangeRequest()
 	/*fmt.Println("Semáforo", 0, " tem o seguinte sintoma: ", s[0].CongestionRate)
 	fmt.Println("Semáforo", 1, " tem o seguinte sintoma: ", s[1].CongestionRate)
 	fmt.Println("Semáforo", 2, " tem o seguinte sintoma: ", s[2].CongestionRate)*/
@@ -92,5 +104,5 @@ func (Analyser) Exec(s []monitor.Sympton) ChangeRequest {
 	}
 
 	fmt.Println("A decisão foi de:", change.Decision)
-	return change
+	return *change
 }

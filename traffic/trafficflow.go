@@ -1,6 +1,7 @@
 package traffic
 
 import (
+	"fmt"
 	"math/rand"
 	"semaphores-adaptative/constants"
 	"time"
@@ -11,7 +12,7 @@ type TrafficFlow struct {
 	TrafficPerSemaphore []int
 }
 
-// cria um novo fluxo de trânsito
+// instancia um novo fluxo de trânsito
 func NewTrafficFlow(num int) *TrafficFlow {
 	t := make([]int, num)
 	tf := TrafficFlow{TrafficPerSemaphore: t}
@@ -27,11 +28,13 @@ func NewTrafficFlow(num int) *TrafficFlow {
 func (t *TrafficFlow) Exec() {
 	for {
 		for i := 0; i < constants.TrafficSignalNumber; i++ {
-			time.Sleep(10 * time.Second)
+			time.Sleep(5 * time.Second)
 			rand.Seed(time.Now().UnixNano())
 			jam := rand.Intn(constants.MaxTraffic)
 			t.TrafficPerSemaphore[i] = jam
+			fmt.Println("O congestionamento do semáforo", i, "é:", t.TrafficPerSemaphore[i])
 		}
+
 	}
 }
 

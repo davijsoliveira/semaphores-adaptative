@@ -2,8 +2,8 @@ package planner
 
 import (
 	"fmt"
-	"semaphores-adaptative/analyser"
 	"semaphores-adaptative/constants"
+	"semaphores-adaptative/controller/analyser"
 	"semaphores-adaptative/trafficApp"
 )
 
@@ -16,6 +16,14 @@ type Plan struct {
 	TrafficSignals []trafficApp.TrafficSignal
 }
 
+func NewPlan() *Plan {
+	cp := []trafficApp.TrafficSignal{}
+	changePlan := Plan{
+		TrafficSignals: cp,
+	}
+	return &changePlan
+}
+
 // instância um novo planejador
 func NewPlanner() *Planner {
 	return &Planner{}
@@ -24,14 +32,16 @@ func NewPlanner() *Planner {
 // executa o planejador
 func (Planner) Exec(c analyser.ChangeRequest, t *trafficApp.TrafficSignalSystem) Plan {
 	// instância um plano com a decisão de mudança
-	cp := []trafficApp.TrafficSignal{}
+	changePlan := NewPlan()
+	/*cp := []trafficApp.TrafficSignal{}
 	changePlan := Plan{
 		Decision:       c.Decision,
 		TrafficSignals: cp,
-	}
+	}*/
 
 	// caso seja necessário a mudança, os semáforos afetados são incluídos no plano de mudança
 	if c.Decision == constants.Change {
+		changePlan.Decision = constants.Change
 		for _, affect := range c.SemaphoresAffects {
 			for _, s := range t.TrafficSignals {
 				if affect == s.Id {
@@ -79,5 +89,5 @@ func (Planner) Exec(c analyser.ChangeRequest, t *trafficApp.TrafficSignalSystem)
 		fmt.Println("O semáforo,", signal.Id, "vai ser adaptado com o tempo de verde:", signal.TimeGreen)
 	}
 
-	return changePlan
+	return *changePlan
 }

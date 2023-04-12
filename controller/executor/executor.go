@@ -1,7 +1,7 @@
 package executor
 
 import (
-	"semaphores-adaptative/planner"
+	"semaphores-adaptative/controller/planner"
 	"semaphores-adaptative/trafficApp"
 )
 
