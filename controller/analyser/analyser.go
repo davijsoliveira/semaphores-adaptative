@@ -52,15 +52,15 @@ func (Analyser) Exec(fromMonitor chan []monitor.Symptom, toPlanner chan ChangeRe
 			switch {
 			case sympton.CongestionRate == constants.Low:
 				numLow++
-				knowledge.KnowledgeDB.LastSemaphoreSymptom[sympton.SemaphoreID] = sympton.CongestionRate
+				knowledge.KnowledgeDB.LastSignalSymptom[sympton.SemaphoreID] = sympton.CongestionRate
 			case sympton.CongestionRate == constants.Medium:
 				numMedium++
 				change.SemaphoresAffects = append(change.SemaphoresAffects, sympton.SemaphoreID)
-				knowledge.KnowledgeDB.LastSemaphoreSymptom[sympton.SemaphoreID] = sympton.CongestionRate
+				knowledge.KnowledgeDB.LastSignalSymptom[sympton.SemaphoreID] = sympton.CongestionRate
 			case sympton.CongestionRate == constants.Intense:
 				numIntensive++
 				change.SemaphoresAffects = append(change.SemaphoresAffects, sympton.SemaphoreID)
-				knowledge.KnowledgeDB.LastSemaphoreSymptom[sympton.SemaphoreID] = sympton.CongestionRate
+				knowledge.KnowledgeDB.LastSignalSymptom[sympton.SemaphoreID] = sympton.CongestionRate
 			}
 		}
 
@@ -72,6 +72,7 @@ func (Analyser) Exec(fromMonitor chan []monitor.Symptom, toPlanner chan ChangeRe
 		change.Congestion = percentCongestion
 
 		// verifica se o congestionamento atual está de acordo com a meta e solicita ou não a mudança
+		//TODO se os valores dos sinais forem os mesmos a serem adaptados, não realizar a adaptação
 		switch constants.Goal {
 		case constants.GoalLowCongestion:
 			switch {

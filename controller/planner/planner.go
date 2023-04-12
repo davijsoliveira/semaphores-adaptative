@@ -29,7 +29,7 @@ func NewPlanner() *Planner {
 	return &Planner{}
 }
 
-func (Planner) Exec(fromAnalyser chan analyser.ChangeRequest, toExecutor chan Plan, t *trafficApp.TrafficSignalSystem) {
+func (Planner) Exec(fromAnalyser chan analyser.ChangeRequest, toExecutor chan Plan) {
 	for {
 		c := <-fromAnalyser
 
@@ -37,50 +37,55 @@ func (Planner) Exec(fromAnalyser chan analyser.ChangeRequest, toExecutor chan Pl
 		changePlan := NewPlan()
 
 		// caso seja necessário a mudança, os semáforos afetados são incluídos no plano de mudança
+		// com uma nova configuração conforme o nível de congestionamento
 		if c.Decision == constants.Change {
 			changePlan.Decision = constants.Change
 			for _, affect := range c.SemaphoresAffects {
-				for _, s := range t.TrafficSignals {
-					if affect == s.Id {
-						// prepara o plano de acordo com a meta e a porcentagem de congestionamento
-						switch constants.Goal {
-						case constants.GoalLowCongestion:
-							switch {
-							case c.Congestion <= constants.CongestionBasePercent:
-								s.TimeGreen = 90
-								s.TimeYellow = 5
-								s.TimeRed = 25
-							case c.Congestion <= constants.CongestionMaxPercent && c.Congestion > constants.CongestionBasePercent:
-								s.TimeGreen = 100
-								s.TimeYellow = 5
-								s.TimeRed = 20
-							case c.Congestion > constants.CongestionMaxPercent:
-								s.TimeGreen = 120
-								s.TimeYellow = 5
-								s.TimeRed = 15
-							}
-							changePlan.TrafficSignals = append(changePlan.TrafficSignals, s)
-						case constants.GoalMediumCongestion:
-							switch {
-							case c.Congestion <= constants.CongestionBasePercent:
-								s.TimeGreen = 70
-								s.TimeYellow = 15
-								s.TimeRed = 50
-							case c.Congestion <= constants.CongestionMaxPercent && c.Congestion > constants.CongestionBasePercent:
-								s.TimeGreen = 80
-								s.TimeYellow = 10
-								s.TimeRed = 40
-							case c.Congestion > constants.CongestionMaxPercent:
-								s.TimeGreen = 90
-								s.TimeYellow = 5
-								s.TimeRed = 30
-							}
-							changePlan.TrafficSignals = append(changePlan.TrafficSignals, s)
-						}
+				signalsNewConf := trafficApp.TrafficSignal{}
+				// prepara o plano conforme a meta e a porcentagem de congestionamento
+				switch constants.Goal {
+				case constants.GoalLowCongestion:
+					switch {
+					case c.Congestion <= constants.CongestionBasePercent:
+						signalsNewConf.Id = affect
+						signalsNewConf.TimeGreen = 90
+						signalsNewConf.TimeYellow = 5
+						signalsNewConf.TimeRed = 25
+					case c.Congestion <= constants.CongestionMaxPercent && c.Congestion > constants.CongestionBasePercent:
+						signalsNewConf.Id = affect
+						signalsNewConf.TimeGreen = 100
+						signalsNewConf.TimeYellow = 5
+						signalsNewConf.TimeRed = 20
+					case c.Congestion > constants.CongestionMaxPercent:
+						signalsNewConf.Id = affect
+						signalsNewConf.TimeGreen = 120
+						signalsNewConf.TimeYellow = 5
+						signalsNewConf.TimeRed = 15
 					}
+					changePlan.TrafficSignals = append(changePlan.TrafficSignals, signalsNewConf)
+				case constants.GoalMediumCongestion:
+					switch {
+					case c.Congestion <= constants.CongestionBasePercent:
+						signalsNewConf.Id = affect
+						signalsNewConf.TimeGreen = 70
+						signalsNewConf.TimeYellow = 15
+						signalsNewConf.TimeRed = 50
+					case c.Congestion <= constants.CongestionMaxPercent && c.Congestion > constants.CongestionBasePercent:
+						signalsNewConf.Id = affect
+						signalsNewConf.TimeGreen = 80
+						signalsNewConf.TimeYellow = 10
+						signalsNewConf.TimeRed = 40
+					case c.Congestion > constants.CongestionMaxPercent:
+						signalsNewConf.Id = affect
+						signalsNewConf.TimeGreen = 90
+						signalsNewConf.TimeYellow = 5
+						signalsNewConf.TimeRed = 30
+					}
+					changePlan.TrafficSignals = append(changePlan.TrafficSignals, signalsNewConf)
 				}
 			}
 		}
+
 		fmt.Println("################### PLANNER ##########################################################")
 		for _, signal := range changePlan.TrafficSignals {
 			fmt.Println("O semáforo de ID:", signal.Id, "vai ser adaptado com o tempo de verde:", signal.TimeGreen)

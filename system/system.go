@@ -43,7 +43,7 @@ func main() {
 	go trafSystem.Exec(appToMonitor, executeToApp)
 	go mon.Exec(appToMonitor, monitorToAnalyser, trafFlow)
 	go anl.Exec(monitorToAnalyser, analyserToPlanner)
-	go pln.Exec(analyserToPlanner, plannerToExecute, trafSystem)
+	go pln.Exec(analyserToPlanner, plannerToExecute)
 	go exc.Exec(plannerToExecute, executeToApp)
 	wg.Wait()
 }
