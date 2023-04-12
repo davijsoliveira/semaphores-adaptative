@@ -52,16 +52,15 @@ func (Analyser) Exec(fromMonitor chan []monitor.Symptom, toPlanner chan ChangeRe
 			switch {
 			case sympton.CongestionRate == constants.Low:
 				numLow++
-			// verifica o sintoma e se o último sintoma estava em um nível mais alto de congestionamento
-			//case sympton.CongestionRate == constants.Medium && knowledge.KnowledgeDB.LastSemaphoreSymptom[sympton.SemaphoreID] == constants.Low:
+				knowledge.KnowledgeDB.LastSemaphoreSymptom[sympton.SemaphoreID] = sympton.CongestionRate
 			case sympton.CongestionRate == constants.Medium:
 				numMedium++
 				change.SemaphoresAffects = append(change.SemaphoresAffects, sympton.SemaphoreID)
-			//case sympton.CongestionRate == constants.Intense && knowledge.KnowledgeDB.LastSemaphoreSymptom[sympton.SemaphoreID] != constants.Intense:
+				knowledge.KnowledgeDB.LastSemaphoreSymptom[sympton.SemaphoreID] = sympton.CongestionRate
 			case sympton.CongestionRate == constants.Intense:
 				numIntensive++
 				change.SemaphoresAffects = append(change.SemaphoresAffects, sympton.SemaphoreID)
-				// TODO knowledge.KnowledgeDB.LastSemaphoreSymptom[sympton.SemaphoreID] = sympton.CongestionRate
+				knowledge.KnowledgeDB.LastSemaphoreSymptom[sympton.SemaphoreID] = sympton.CongestionRate
 			}
 		}
 
@@ -72,15 +71,20 @@ func (Analyser) Exec(fromMonitor chan []monitor.Symptom, toPlanner chan ChangeRe
 		// atribui a porcentagem de congestionamento para a requisição de mudança
 		change.Congestion = percentCongestion
 
-		//TODO if knowledge.KnowledgeDB.LastDecision == constants.Change
-
 		// verifica se o congestionamento atual está de acordo com a meta e solicita ou não a mudança
 		switch constants.Goal {
 		case constants.GoalLowCongestion:
 			switch {
 			case percentCongestion <= 40:
-				change.Decision = constants.NoChange
-				knowledge.KnowledgeDB.LastDecision = constants.NoChange
+				// caso tenha ocorrido uma mudança anteriormente, a decisão é adaptar para retornar
+				//a configuração dos semáforos para um tempo mais adequado ao fluxo
+				if knowledge.KnowledgeDB.LastDecision == constants.NoChange {
+					change.Decision = constants.NoChange
+					knowledge.KnowledgeDB.LastDecision = constants.NoChange
+				} else {
+					change.Decision = constants.Change
+					knowledge.KnowledgeDB.LastDecision = constants.Change
+				}
 			case percentCongestion > 40:
 				change.Decision = constants.Change
 				knowledge.KnowledgeDB.LastDecision = constants.Change
@@ -88,8 +92,13 @@ func (Analyser) Exec(fromMonitor chan []monitor.Symptom, toPlanner chan ChangeRe
 		case constants.GoalMediumCongestion:
 			switch {
 			case percentCongestion <= 60:
-				change.Decision = constants.NoChange
-				knowledge.KnowledgeDB.LastDecision = constants.NoChange
+				if knowledge.KnowledgeDB.LastDecision == constants.NoChange {
+					change.Decision = constants.NoChange
+					knowledge.KnowledgeDB.LastDecision = constants.NoChange
+				} else {
+					change.Decision = constants.Change
+					knowledge.KnowledgeDB.LastDecision = constants.Change
+				}
 			case percentCongestion > 60:
 				change.Decision = constants.Change
 				knowledge.KnowledgeDB.LastDecision = constants.Change

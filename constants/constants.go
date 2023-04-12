@@ -18,7 +18,7 @@ const DefaultTraffic = 10
 const TrafficSignalNumber = 3
 
 // Max Traffic
-const MaxTraffic = 60
+const MaxTraffic = 30
 
 // Symptoms
 const Low = "low"
