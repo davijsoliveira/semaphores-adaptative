@@ -75,7 +75,7 @@ func (Analyser) Exec(fromMonitor chan []monitor.Symptom, toPlanner chan ChangeRe
 		switch constants.Goal {
 		case constants.GoalLowCongestion:
 			switch {
-			case percentCongestion <= 40:
+			case percentCongestion <= constants.PercentLowCongestion:
 				// caso tenha ocorrido uma mudança anteriormente, a decisão é adaptar para retornar
 				//a configuração dos semáforos para um tempo mais adequado ao fluxo
 				if knowledge.KnowledgeDB.LastDecision == constants.NoChange {
@@ -84,22 +84,32 @@ func (Analyser) Exec(fromMonitor chan []monitor.Symptom, toPlanner chan ChangeRe
 				} else {
 					change.Decision = constants.Change
 					knowledge.KnowledgeDB.LastDecision = constants.Change
+					for _, sympton := range s {
+						if sympton.CongestionRate == constants.Low {
+							change.SemaphoresAffects = append(change.SemaphoresAffects, sympton.SemaphoreID)
+						}
+					}
 				}
-			case percentCongestion > 40:
+			case percentCongestion > constants.PercentLowCongestion:
 				change.Decision = constants.Change
 				knowledge.KnowledgeDB.LastDecision = constants.Change
 			}
 		case constants.GoalMediumCongestion:
 			switch {
-			case percentCongestion <= 60:
+			case percentCongestion <= constants.PercentMediumCongestion:
 				if knowledge.KnowledgeDB.LastDecision == constants.NoChange {
 					change.Decision = constants.NoChange
 					knowledge.KnowledgeDB.LastDecision = constants.NoChange
 				} else {
 					change.Decision = constants.Change
 					knowledge.KnowledgeDB.LastDecision = constants.Change
+					for _, sympton := range s {
+						if sympton.CongestionRate == constants.Low {
+							change.SemaphoresAffects = append(change.SemaphoresAffects, sympton.SemaphoreID)
+						}
+					}
 				}
-			case percentCongestion > 60:
+			case percentCongestion > constants.PercentMediumCongestion:
 				change.Decision = constants.Change
 				knowledge.KnowledgeDB.LastDecision = constants.Change
 			}

@@ -11,14 +11,18 @@ const DefaultGreen = 60
 const DefaultYellow = 15
 const DefaultRed = 60
 
-// default traffic
+// Traffic Parameters
 const DefaultTraffic = 10
-
-// TrafficSignals Number
+const MaxTraffic = 30
 const TrafficSignalNumber = 3
 
-// Max Traffic
-const MaxTraffic = 30
+// Signals Configurations
+const CongestionBasePercent = 50
+const CongestionMaxPercent = 70
+
+// Percent Congestion
+const PercentLowCongestion = 40
+const PercentMediumCongestion = 60
 
 // Symptoms
 const Low = "low"

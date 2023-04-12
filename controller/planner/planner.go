@@ -46,15 +46,15 @@ func (Planner) Exec(fromAnalyser chan analyser.ChangeRequest, toExecutor chan Pl
 						switch constants.Goal {
 						case constants.GoalLowCongestion:
 							switch {
-							case c.Congestion <= 50:
+							case c.Congestion <= constants.CongestionBasePercent:
 								s.TimeGreen = 90
 								s.TimeYellow = 5
 								s.TimeRed = 25
-							case c.Congestion <= 70 && c.Congestion > 50:
+							case c.Congestion <= constants.CongestionMaxPercent && c.Congestion > constants.CongestionBasePercent:
 								s.TimeGreen = 100
 								s.TimeYellow = 5
 								s.TimeRed = 20
-							case c.Congestion > 70:
+							case c.Congestion > constants.CongestionMaxPercent:
 								s.TimeGreen = 120
 								s.TimeYellow = 5
 								s.TimeRed = 15
@@ -62,15 +62,15 @@ func (Planner) Exec(fromAnalyser chan analyser.ChangeRequest, toExecutor chan Pl
 							changePlan.TrafficSignals = append(changePlan.TrafficSignals, s)
 						case constants.GoalMediumCongestion:
 							switch {
-							case c.Congestion <= 50:
+							case c.Congestion <= constants.CongestionBasePercent:
 								s.TimeGreen = 70
 								s.TimeYellow = 15
 								s.TimeRed = 50
-							case c.Congestion <= 70 && c.Congestion > 50:
+							case c.Congestion <= constants.CongestionMaxPercent && c.Congestion > constants.CongestionBasePercent:
 								s.TimeGreen = 80
 								s.TimeYellow = 10
 								s.TimeRed = 40
-							case c.Congestion > 70:
+							case c.Congestion > constants.CongestionMaxPercent:
 								s.TimeGreen = 90
 								s.TimeYellow = 5
 								s.TimeRed = 30
