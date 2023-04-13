@@ -51,15 +51,12 @@ func (Analyser) Exec(fromMonitor chan []monitor.Symptom, toPlanner chan ChangeRe
 			switch {
 			case sympton.CongestionRate == constants.Low && knowledge.KnowledgeDB.LastSignalSymptom[sympton.SemaphoreID] != constants.Low:
 				numLow++
-				//knowledge.KnowledgeDB.LastSignalSymptom[sympton.SemaphoreID] = sympton.CongestionRate
 			case sympton.CongestionRate == constants.Medium:
 				numMedium++
 				change.SemaphoresAffects = append(change.SemaphoresAffects, sympton.SemaphoreID)
-				//knowledge.KnowledgeDB.LastSignalSymptom[sympton.SemaphoreID] = sympton.CongestionRate
 			case sympton.CongestionRate == constants.Intense:
 				numIntensive++
 				change.SemaphoresAffects = append(change.SemaphoresAffects, sympton.SemaphoreID)
-				//knowledge.KnowledgeDB.LastSignalSymptom[sympton.SemaphoreID] = sympton.CongestionRate
 			}
 			knowledge.KnowledgeDB.LastSignalSymptom[sympton.SemaphoreID] = sympton.CongestionRate
 		}
