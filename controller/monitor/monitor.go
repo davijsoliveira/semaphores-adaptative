@@ -60,18 +60,14 @@ func (Monitor) Exec(fromTrafficApp chan []trafficApp.TrafficSignal, toAnalyser c
 		for i := 0; i < constants.TrafficSignalNumber; i++ {
 			switch {
 			case trafficFlowRate.TrafficPerSemaphore[i] <= 10:
-				Symptoms.SymptomsGroup[i].SemaphoreID = i
-				Symptoms.SymptomsGroup[i].CurrentRate = trafficFlowRate.TrafficPerSemaphore[i]
 				Symptoms.SymptomsGroup[i].CongestionRate = constants.Low
 			case trafficFlowRate.TrafficPerSemaphore[i] <= 20 && trafficFlowRate.TrafficPerSemaphore[i] > 10:
-				Symptoms.SymptomsGroup[i].SemaphoreID = i
-				Symptoms.SymptomsGroup[i].CurrentRate = trafficFlowRate.TrafficPerSemaphore[i]
 				Symptoms.SymptomsGroup[i].CongestionRate = constants.Medium
 			case trafficFlowRate.TrafficPerSemaphore[i] > 20:
-				Symptoms.SymptomsGroup[i].SemaphoreID = i
-				Symptoms.SymptomsGroup[i].CurrentRate = trafficFlowRate.TrafficPerSemaphore[i]
 				Symptoms.SymptomsGroup[i].CongestionRate = constants.Intense
 			}
+			Symptoms.SymptomsGroup[i].SemaphoreID = i
+			Symptoms.SymptomsGroup[i].CurrentRate = trafficFlowRate.TrafficPerSemaphore[i]
 			Symptoms.SymptomsGroup[i].TimeGreen = knowledge.KnowledgeDB.LastSignalConfiguration[i].TimeGreen
 			Symptoms.SymptomsGroup[i].TimeYellow = knowledge.KnowledgeDB.LastSignalConfiguration[i].TimeYellow
 			Symptoms.SymptomsGroup[i].TimeRed = knowledge.KnowledgeDB.LastSignalConfiguration[i].TimeRed
