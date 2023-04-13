@@ -3,10 +3,7 @@ package main
 import (
 	//"fmt"
 	"semaphores-adaptative/constants"
-	"semaphores-adaptative/controller/analyser"
-	"semaphores-adaptative/controller/executor"
-	"semaphores-adaptative/controller/monitor"
-	"semaphores-adaptative/controller/planner"
+	"semaphores-adaptative/controller"
 	"semaphores-adaptative/goal"
 	"semaphores-adaptative/trafficApp"
 	"sync"
@@ -26,28 +23,30 @@ func main() {
 	// cria os canais
 	appToMonitor := make(chan []trafficApp.TrafficSignal)
 	goalToMonitor := make(chan string)
-	monitorToAnalyser := make(chan []monitor.Symptom)
-	analyserToPlanner := make(chan analyser.ChangeRequest)
-	plannerToExecute := make(chan planner.Plan)
+	//monitorToAnalyser := make(chan []monitor.Symptom)
+	//analyserToPlanner := make(chan analyser.ChangeRequest)
+	//plannerToExecute := make(chan planner.Plan)
 	executeToApp := make(chan []trafficApp.TrafficSignal)
 
 	// instancia a app e o componentes do mape-k
 	trafFlow := traffic.NewTrafficFlow(constants.TrafficSignalNumber)
 	trafSystem := trafficApp.NewTrafficSignalSystem(constants.TrafficSignalNumber)
 	gl := goal.NewGoalConfiguration()
-	mon := monitor.NewMonitor()
-	anl := analyser.NewAnalyser()
-	pln := planner.NewPlanner()
-	exc := executor.NewExecutor()
+	ctl := controller.NewController()
+	//mon := monitor.NewMonitor()
+	//anl := analyser.NewAnalyser()
+	//pln := planner.NewPlanner()
+	//exc := executor.NewExecutor()
 
 	// executa os componentes
-	wg.Add(7)
+	wg.Add(8)
 	go trafFlow.Exec()
 	go trafSystem.Exec(appToMonitor, executeToApp)
 	go gl.Exec(goalToMonitor)
-	go mon.Exec(appToMonitor, monitorToAnalyser, goalToMonitor, trafFlow)
-	go anl.Exec(monitorToAnalyser, analyserToPlanner)
-	go pln.Exec(analyserToPlanner, plannerToExecute)
-	go exc.Exec(plannerToExecute, executeToApp)
+	go ctl.Exec(trafFlow, appToMonitor, executeToApp, goalToMonitor)
+	//go mon.Exec(appToMonitor, monitorToAnalyser, goalToMonitor, trafFlow)
+	//go anl.Exec(monitorToAnalyser, analyserToPlanner)
+	//go pln.Exec(analyserToPlanner, plannerToExecute)
+	//go exc.Exec(plannerToExecute, executeToApp)
 	wg.Wait()
 }
