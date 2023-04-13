@@ -5,8 +5,6 @@ const GoalLowCongestion = "LowCongestion"
 const GoalMediumCongestion = "MediumCongestion"
 const GoalIntensiveCongestion = "IntensiveCongestion"
 
-var Goal = GoalLowCongestion
-
 // Default Time for colors
 const DefaultGreen = 60
 const DefaultYellow = 15

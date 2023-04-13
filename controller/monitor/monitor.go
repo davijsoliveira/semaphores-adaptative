@@ -2,8 +2,8 @@ package monitor
 
 import (
 	"fmt"
+	"semaphores-adaptative/commons"
 	"semaphores-adaptative/constants"
-	"semaphores-adaptative/controller/knowledge"
 	"semaphores-adaptative/traffic"
 	"semaphores-adaptative/trafficApp"
 	"time"
@@ -45,32 +45,20 @@ func NewMonitor() *Monitor {
 }
 
 // executa o monitor
-func (Monitor) Exec(fromTrafficApp chan []trafficApp.TrafficSignal, toAnalyser chan []Symptom, flow *traffic.TrafficFlow) {
-	iterations := 0
+func (Monitor) Exec(fromTrafficApp chan []trafficApp.TrafficSignal, toAnalyser chan []Symptom, fromGoalConfiguration chan string, flow *traffic.TrafficFlow) {
+	//iterations := 0
 	for {
 		// interval para monitor coletar os dados de congestionamento
 		time.Sleep(10 * time.Second)
 
-		if iterations < 5 {
-			iterations++
-		} else {
-			iterations = 0
-			switch constants.Goal {
-			case constants.GoalLowCongestion:
-				constants.Goal = constants.GoalMediumCongestion
-			case constants.GoalMediumCongestion:
-				constants.Goal = constants.GoalIntensiveCongestion
-			case constants.GoalIntensiveCongestion:
-				constants.Goal = constants.GoalLowCongestion
-			}
-		}
+		ta := <-fromTrafficApp
 
-		fmt.Println("A META ATUAL É:", constants.Goal)
+		g := <-fromGoalConfiguration
+
+		commons.Goal = g
 
 		// coleta dos dados de congestionamento
 		trafficFlowRate := flow.Sense()
-
-		//TODO inserir no symptom o valor do verde a partir do monitoramento da aplicação
 
 		// Gera o sintoma de cada semáforo, verificando os semáforos que tem tráfego baixo/médio/intenso
 		Symptoms := NewSymptoms(constants.TrafficSignalNumber)
@@ -85,9 +73,12 @@ func (Monitor) Exec(fromTrafficApp chan []trafficApp.TrafficSignal, toAnalyser c
 			}
 			Symptoms.SymptomsGroup[i].SemaphoreID = i
 			Symptoms.SymptomsGroup[i].CurrentRate = trafficFlowRate.TrafficPerSemaphore[i]
-			Symptoms.SymptomsGroup[i].TimeGreen = knowledge.KnowledgeDB.LastSignalConfiguration[i].TimeGreen
-			Symptoms.SymptomsGroup[i].TimeYellow = knowledge.KnowledgeDB.LastSignalConfiguration[i].TimeYellow
-			Symptoms.SymptomsGroup[i].TimeRed = knowledge.KnowledgeDB.LastSignalConfiguration[i].TimeRed
+			//Symptoms.SymptomsGroup[i].TimeGreen = knowledge.KnowledgeDB.LastSignalConfiguration[i].TimeGreen
+			Symptoms.SymptomsGroup[i].TimeGreen = ta[i].TimeGreen
+			//Symptoms.SymptomsGroup[i].TimeYellow = knowledge.KnowledgeDB.LastSignalConfiguration[i].TimeYellow
+			Symptoms.SymptomsGroup[i].TimeYellow = ta[i].TimeYellow
+			//Symptoms.SymptomsGroup[i].TimeRed = knowledge.KnowledgeDB.LastSignalConfiguration[i].TimeRed
+			Symptoms.SymptomsGroup[i].TimeRed = ta[i].TimeRed
 		}
 		fmt.Println("################### MONITOR #########################################################")
 		fmt.Println("Semáforo", 0, " tem o seguinte sintoma: ", Symptoms.SymptomsGroup[0].CongestionRate)

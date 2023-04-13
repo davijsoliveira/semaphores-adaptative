@@ -1,9 +1,9 @@
 /*
-************************************************************************************************************************************************
+***********************************************************************************************************************************************************
 Author: Davi Oliveira
 Description: This code implements a simple app for traffic signal timing control. The time of the signal traffic may change according to the traffic flow.
 Date: 06/03/2023
-************************************************************************************************************************************************
+***********************************************************************************************************************************************************
 */
 package trafficApp
 
@@ -45,7 +45,7 @@ func NewTrafficSignalSystem(num int) *TrafficSignalSystem {
 // executa o sistema de semáforos
 func (s *TrafficSignalSystem) Exec(toMonitor chan []TrafficSignal, fromExecutor chan []TrafficSignal) {
 	for {
-		//toMonitor <- s.TrafficSignals
+		toMonitor <- s.TrafficSignals
 		ts := <-fromExecutor
 
 		// itera sobre os semáforos alterados e os pertencentes ao sistema para aplicar as alterações

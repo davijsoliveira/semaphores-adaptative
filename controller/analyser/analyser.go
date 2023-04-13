@@ -3,6 +3,7 @@ package analyser
 import (
 	"fmt"
 	"math"
+	"semaphores-adaptative/commons"
 	"semaphores-adaptative/constants"
 	"semaphores-adaptative/controller/knowledge"
 	"semaphores-adaptative/controller/monitor"
@@ -71,7 +72,7 @@ func (Analyser) Exec(fromMonitor chan []monitor.Symptom, toPlanner chan ChangeRe
 		plan := constants.GoalLowCongestionP1
 
 		// obtém o plano a ser implementado
-		switch constants.Goal {
+		switch commons.Goal {
 		case constants.GoalLowCongestion:
 			switch {
 			case change.Congestion < constants.CongestionBasePercent:
@@ -112,7 +113,7 @@ func (Analyser) Exec(fromMonitor chan []monitor.Symptom, toPlanner chan ChangeRe
 			change.Decision = constants.NoChange
 		} else {
 			// verifica se o congestionamento atual está de acordo com a meta e solicita ou não a mudança
-			switch constants.Goal {
+			switch commons.Goal {
 			case constants.GoalLowCongestion:
 				switch {
 				case percentCongestion <= constants.PercentLowCongestion:

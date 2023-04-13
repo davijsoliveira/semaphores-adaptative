@@ -2,6 +2,7 @@ package planner
 
 import (
 	"fmt"
+	"semaphores-adaptative/commons"
 	"semaphores-adaptative/constants"
 	"semaphores-adaptative/controller/analyser"
 	"semaphores-adaptative/controller/knowledge"
@@ -44,7 +45,7 @@ func (Planner) Exec(fromAnalyser chan analyser.ChangeRequest, toExecutor chan Pl
 			for _, affect := range c.SemaphoresAffects {
 				signalsNewConf := trafficApp.TrafficSignal{}
 				// prepara o plano conforme a meta e a porcentagem de congestionamento
-				switch constants.Goal {
+				switch commons.Goal {
 				case constants.GoalLowCongestion:
 					switch {
 					case c.Congestion < constants.CongestionBasePercent:
