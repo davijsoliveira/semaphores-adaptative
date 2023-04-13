@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"semaphores-adaptative/constants"
 	"semaphores-adaptative/controller/analyser"
+	"semaphores-adaptative/controller/knowledge"
 	"semaphores-adaptative/trafficApp"
 )
 
@@ -51,16 +52,19 @@ func (Planner) Exec(fromAnalyser chan analyser.ChangeRequest, toExecutor chan Pl
 						signalsNewConf.TimeGreen = 90
 						signalsNewConf.TimeYellow = 5
 						signalsNewConf.TimeRed = 25
+						knowledge.KnowledgeDB.LastSignalPlan[affect] = constants.GoalLowCongestionP1
 					case c.Congestion <= constants.CongestionMaxPercent && c.Congestion > constants.CongestionBasePercent:
 						signalsNewConf.Id = affect
 						signalsNewConf.TimeGreen = 100
 						signalsNewConf.TimeYellow = 5
 						signalsNewConf.TimeRed = 20
+						knowledge.KnowledgeDB.LastSignalPlan[affect] = constants.GoalLowCongestionP2
 					case c.Congestion > constants.CongestionMaxPercent:
 						signalsNewConf.Id = affect
 						signalsNewConf.TimeGreen = 120
 						signalsNewConf.TimeYellow = 5
 						signalsNewConf.TimeRed = 15
+						knowledge.KnowledgeDB.LastSignalPlan[affect] = constants.GoalLowCongestionP3
 					}
 					changePlan.TrafficSignals = append(changePlan.TrafficSignals, signalsNewConf)
 				case constants.GoalMediumCongestion:

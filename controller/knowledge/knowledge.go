@@ -8,6 +8,7 @@ import (
 type Knowledge struct {
 	LastDecision            string
 	LastSignalSymptom       map[int]string
+	LastSignalPlan          map[int]string
 	LastSignalConfiguration []trafficApp.TrafficSignal
 }
 
@@ -15,6 +16,7 @@ var KnowledgeDB = NewKnowledge()
 
 func NewKnowledge() *Knowledge {
 	k := make(map[int]string, constants.TrafficSignalNumber)
+	p := make(map[int]string, constants.TrafficSignalNumber)
 
 	// inicializa os semáforos com os valores default
 	signals := make([]trafficApp.TrafficSignal, constants.TrafficSignalNumber)
@@ -23,7 +25,7 @@ func NewKnowledge() *Knowledge {
 	}
 
 	// inicializa o knowledge com valores default
-	knw := Knowledge{constants.NoChange, k, signals}
+	knw := Knowledge{constants.NoChange, k, p, signals}
 	for i := 0; i < constants.TrafficSignalNumber; i++ {
 		knw.LastSignalSymptom[i] = "low"
 	}
