@@ -46,9 +46,26 @@ func NewMonitor() *Monitor {
 
 // executa o monitor
 func (Monitor) Exec(fromTrafficApp chan []trafficApp.TrafficSignal, toAnalyser chan []Symptom, flow *traffic.TrafficFlow) {
+	iterations := 0
 	for {
 		// interval para monitor coletar os dados de congestionamento
 		time.Sleep(10 * time.Second)
+
+		if iterations < 5 {
+			iterations++
+		} else {
+			iterations = 0
+			switch constants.Goal {
+			case constants.GoalLowCongestion:
+				constants.Goal = constants.GoalMediumCongestion
+			case constants.GoalMediumCongestion:
+				constants.Goal = constants.GoalIntensiveCongestion
+			case constants.GoalIntensiveCongestion:
+				constants.Goal = constants.GoalLowCongestion
+			}
+		}
+
+		fmt.Println("A META ATUAL É:", constants.Goal)
 
 		// coleta dos dados de congestionamento
 		trafficFlowRate := flow.Sense()

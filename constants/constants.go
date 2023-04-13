@@ -4,7 +4,8 @@ package constants
 const GoalLowCongestion = "LowCongestion"
 const GoalMediumCongestion = "MediumCongestion"
 const GoalIntensiveCongestion = "IntensiveCongestion"
-const Goal = GoalLowCongestion
+
+var Goal = GoalLowCongestion
 
 // Default Time for colors
 const DefaultGreen = 60

@@ -74,20 +74,20 @@ func (Analyser) Exec(fromMonitor chan []monitor.Symptom, toPlanner chan ChangeRe
 		switch constants.Goal {
 		case constants.GoalLowCongestion:
 			switch {
-			case change.Congestion <= constants.CongestionBasePercent:
+			case change.Congestion < constants.CongestionBasePercent:
 				plan = constants.GoalLowCongestionP1
-			case change.Congestion <= constants.CongestionMaxPercent && change.Congestion > constants.CongestionBasePercent:
+			case change.Congestion < constants.CongestionMaxPercent && change.Congestion >= constants.CongestionBasePercent:
 				plan = constants.GoalLowCongestionP2
-			case change.Congestion > constants.CongestionMaxPercent:
+			case change.Congestion >= constants.CongestionMaxPercent:
 				plan = constants.GoalLowCongestionP3
 			}
 		case constants.GoalMediumCongestion:
 			switch {
-			case change.Congestion <= constants.CongestionBasePercent:
+			case change.Congestion < constants.CongestionBasePercent:
 				plan = constants.GoalMediumCongestionP1
-			case change.Congestion <= constants.CongestionMaxPercent && change.Congestion > constants.CongestionBasePercent:
+			case change.Congestion < constants.CongestionMaxPercent && change.Congestion >= constants.CongestionBasePercent:
 				plan = constants.GoalMediumCongestionP2
-			case change.Congestion > constants.CongestionMaxPercent:
+			case change.Congestion >= constants.CongestionMaxPercent:
 				plan = constants.GoalMediumCongestionP3
 			}
 		}
@@ -134,8 +134,7 @@ func (Analyser) Exec(fromMonitor chan []monitor.Symptom, toPlanner chan ChangeRe
 			case constants.GoalMediumCongestion:
 				switch {
 				case percentCongestion <= constants.PercentMediumCongestion:
-					//TODO AVALIAR NECESSIDADE
-					if knowledge.KnowledgeDB.LastDecision == constants.NoChange {
+					if knowledge.KnowledgeDB.LastDecision == constants.NoChange && numLow == 1 {
 						change.Decision = constants.NoChange
 					} else {
 						change.Decision = constants.Change
