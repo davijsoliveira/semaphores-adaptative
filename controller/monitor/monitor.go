@@ -3,6 +3,7 @@ package monitor
 import (
 	"fmt"
 	"semaphores-adaptative/constants"
+	"semaphores-adaptative/controller/knowledge"
 	"semaphores-adaptative/traffic"
 	"semaphores-adaptative/trafficApp"
 	"time"
@@ -16,6 +17,9 @@ type Symptom struct {
 	SemaphoreID    int
 	CurrentRate    int
 	CongestionRate string
+	TimeGreen      int
+	TimeYellow     int
+	TimeRed        int
 }
 
 // tipo grupo de sintomas
@@ -49,6 +53,8 @@ func (Monitor) Exec(fromTrafficApp chan []trafficApp.TrafficSignal, toAnalyser c
 		// coleta dos dados de congestionamento
 		trafficFlowRate := flow.Sense()
 
+		//TODO inserir no symptom o valor do verde a partir do monitoramento da aplicação
+
 		// Gera o sintoma de cada semáforo, verificando os semáforos que tem tráfego baixo/médio/intenso
 		Symptoms := NewSymptoms(constants.TrafficSignalNumber)
 		for i := 0; i < constants.TrafficSignalNumber; i++ {
@@ -66,6 +72,9 @@ func (Monitor) Exec(fromTrafficApp chan []trafficApp.TrafficSignal, toAnalyser c
 				Symptoms.SymptomsGroup[i].CurrentRate = trafficFlowRate.TrafficPerSemaphore[i]
 				Symptoms.SymptomsGroup[i].CongestionRate = constants.Intense
 			}
+			Symptoms.SymptomsGroup[i].TimeGreen = knowledge.KnowledgeDB.LastSignalConfiguration[i].TimeGreen
+			Symptoms.SymptomsGroup[i].TimeYellow = knowledge.KnowledgeDB.LastSignalConfiguration[i].TimeYellow
+			Symptoms.SymptomsGroup[i].TimeRed = knowledge.KnowledgeDB.LastSignalConfiguration[i].TimeRed
 		}
 		fmt.Println("################### MONITOR #########################################################")
 		fmt.Println("Semáforo", 0, " tem o seguinte sintoma: ", Symptoms.SymptomsGroup[0].CongestionRate)

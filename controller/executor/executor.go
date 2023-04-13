@@ -30,12 +30,12 @@ func (Executor) Exec(fromPlanner chan planner.Plan, toTrafficApp chan []trafficA
 			}
 		}
 
-		for _, v := range knowledge.KnowledgeDB.LastSignalConfiguration {
+		/*for _, v := range knowledge.KnowledgeDB.LastSignalConfiguration {
 			fmt.Println("O semáforo de ID:", v.Id, "tem como último valor para o verde:", v.TimeGreen)
 			fmt.Println("O semáforo de ID:", v.Id, "tem como último valor para o amarelo:", v.TimeYellow)
 			fmt.Println("O semáforo de ID:", v.Id, "tem como último valor para o vermelho:", v.TimeRed)
 		}
-		fmt.Println("######################################################################################")
+		fmt.Println("######################################################################################")*/
 		toTrafficApp <- p.TrafficSignals
 
 	}

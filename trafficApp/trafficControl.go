@@ -18,7 +18,6 @@ type TrafficSignal struct {
 	TimeGreen  int
 	TimeYellow int
 	TimeRed    int
-	TrafficJam int
 }
 
 // tipo sistema de semáforos
@@ -32,14 +31,6 @@ func NewTrafficSignal(id int) TrafficSignal {
 
 	return s
 }
-
-/*func NewTrafficSignalSystem(num int) *[]TrafficSignal {
-	system := make([]TrafficSignal, num)
-	for i := 0; i < num; i++ {
-		system[i] = NewTrafficSignal(i)
-	}
-	return &system
-}*/
 
 // instancia um sistema de semáforos
 func NewTrafficSignalSystem(num int) *TrafficSignalSystem {
