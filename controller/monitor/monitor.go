@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"semaphores-adaptative/commons"
 	"semaphores-adaptative/constants"
+	"semaphores-adaptative/signalControlApp"
 	"semaphores-adaptative/traffic"
-	"semaphores-adaptative/trafficApp"
 	"time"
 )
 
@@ -45,8 +45,7 @@ func NewMonitor() *Monitor {
 }
 
 // executa o monitor
-func (Monitor) Exec(fromTrafficApp chan []trafficApp.TrafficSignal, toAnalyser chan []Symptom, fromGoalConfiguration chan string, flow *traffic.TrafficFlow) {
-	//iterations := 0
+func (Monitor) Exec(fromTrafficApp chan []signalControlApp.TrafficSignal, toAnalyser chan []Symptom, fromGoalConfiguration chan string, flow *traffic.TrafficFlow) {
 	for {
 		// interval para monitor coletar os dados de congestionamento
 		time.Sleep(10 * time.Second)

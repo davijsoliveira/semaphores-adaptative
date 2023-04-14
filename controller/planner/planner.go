@@ -6,7 +6,7 @@ import (
 	"semaphores-adaptative/constants"
 	"semaphores-adaptative/controller/analyser"
 	"semaphores-adaptative/controller/knowledge"
-	"semaphores-adaptative/trafficApp"
+	"semaphores-adaptative/signalControlApp"
 )
 
 // tipo planejador
@@ -15,11 +15,11 @@ type Planner struct{}
 // tipo plano de mudança
 type Plan struct {
 	Decision       string
-	TrafficSignals []trafficApp.TrafficSignal
+	TrafficSignals []signalControlApp.TrafficSignal
 }
 
 func NewPlan() *Plan {
-	cp := []trafficApp.TrafficSignal{}
+	cp := []signalControlApp.TrafficSignal{}
 	changePlan := Plan{
 		TrafficSignals: cp,
 	}
@@ -43,7 +43,7 @@ func (Planner) Exec(fromAnalyser chan analyser.ChangeRequest, toExecutor chan Pl
 		if c.Decision == constants.Change {
 			changePlan.Decision = constants.Change
 			for _, affect := range c.SemaphoresAffects {
-				signalsNewConf := trafficApp.TrafficSignal{}
+				signalsNewConf := signalControlApp.TrafficSignal{}
 				// prepara o plano conforme a meta e a porcentagem de congestionamento
 				switch commons.Goal {
 				case constants.GoalLowCongestion:

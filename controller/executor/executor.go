@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"semaphores-adaptative/controller/knowledge"
 	"semaphores-adaptative/controller/planner"
-	"semaphores-adaptative/trafficApp"
+	"semaphores-adaptative/signalControlApp"
 )
 
 // tipo executor
@@ -16,7 +16,7 @@ func NewExecutor() *Executor {
 }
 
 // repassa para a aplicação os semáforos que devem ter seu tempo alterado
-func (Executor) Exec(fromPlanner chan planner.Plan, toTrafficApp chan []trafficApp.TrafficSignal) {
+func (Executor) Exec(fromPlanner chan planner.Plan, toTrafficApp chan []signalControlApp.TrafficSignal) {
 	for {
 		p := <-fromPlanner
 		fmt.Println("################### EXECUTOR ##########################################################")

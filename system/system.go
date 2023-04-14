@@ -5,7 +5,7 @@ import (
 	"semaphores-adaptative/constants"
 	"semaphores-adaptative/controller"
 	"semaphores-adaptative/goal"
-	"semaphores-adaptative/trafficApp"
+	"semaphores-adaptative/signalControlApp"
 	"sync"
 
 	/*"semaphores-adaptative/controller/analyser"
@@ -13,7 +13,7 @@ import (
 	"semaphores-adaptative/controller/monitor"
 	"semaphores-adaptative/controller/planner"*/
 	"semaphores-adaptative/traffic"
-	//"semaphores-adaptative/trafficApp"
+	//"semaphores-adaptative/signalControlApp"
 )
 
 func main() {
@@ -21,22 +21,15 @@ func main() {
 	var wg sync.WaitGroup
 
 	// cria os canais
-	appToMonitor := make(chan []trafficApp.TrafficSignal)
+	appToMonitor := make(chan []signalControlApp.TrafficSignal)
 	goalToMonitor := make(chan string)
-	//monitorToAnalyser := make(chan []monitor.Symptom)
-	//analyserToPlanner := make(chan analyser.ChangeRequest)
-	//plannerToExecute := make(chan planner.Plan)
-	executeToApp := make(chan []trafficApp.TrafficSignal)
+	executeToApp := make(chan []signalControlApp.TrafficSignal)
 
-	// instancia a app e o componentes do mape-k
+	// instancia a app, o controller e a componente de configuração da meta
 	trafFlow := traffic.NewTrafficFlow(constants.TrafficSignalNumber)
-	trafSystem := trafficApp.NewTrafficSignalSystem(constants.TrafficSignalNumber)
+	trafSystem := signalControlApp.NewTrafficSignalSystem(constants.TrafficSignalNumber)
 	gl := goal.NewGoalConfiguration()
 	ctl := controller.NewController()
-	//mon := monitor.NewMonitor()
-	//anl := analyser.NewAnalyser()
-	//pln := planner.NewPlanner()
-	//exc := executor.NewExecutor()
 
 	// executa os componentes
 	wg.Add(8)
@@ -44,9 +37,5 @@ func main() {
 	go trafSystem.Exec(appToMonitor, executeToApp)
 	go gl.Exec(goalToMonitor)
 	go ctl.Exec(trafFlow, appToMonitor, executeToApp, goalToMonitor)
-	//go mon.Exec(appToMonitor, monitorToAnalyser, goalToMonitor, trafFlow)
-	//go anl.Exec(monitorToAnalyser, analyserToPlanner)
-	//go pln.Exec(analyserToPlanner, plannerToExecute)
-	//go exc.Exec(plannerToExecute, executeToApp)
 	wg.Wait()
 }

@@ -136,23 +136,12 @@ func (Analyser) Exec(fromMonitor chan []monitor.Symptom, toPlanner chan ChangeRe
 				switch {
 				case percentCongestion <= constants.PercentMediumCongestion:
 					change.Decision = constants.NoChange
-					//if knowledge.KnowledgeDB.LastDecision == constants.NoChange && numLow == 1 {
-					//	change.Decision = constants.NoChange
-					//} else {
-					//	change.Decision = constants.Change
-					//	for _, sympton := range s {
-					//		if sympton.CongestionRate == constants.Low {
-					//			change.SemaphoresAffects = append(change.SemaphoresAffects, sympton.SemaphoreID)
-					//		}
-					//	}
-					//}
 				case percentCongestion > constants.PercentMediumCongestion:
 					change.Decision = constants.Change
 				}
 			case constants.GoalIntensiveCongestion:
 				change.Decision = constants.NoChange
 			}
-
 		}
 
 		//  atualiza o knowledge com a última decisão de adaptação do analyser

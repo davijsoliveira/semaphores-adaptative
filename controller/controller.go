@@ -5,8 +5,8 @@ import (
 	"semaphores-adaptative/controller/executor"
 	"semaphores-adaptative/controller/monitor"
 	"semaphores-adaptative/controller/planner"
+	"semaphores-adaptative/signalControlApp"
 	"semaphores-adaptative/traffic"
-	"semaphores-adaptative/trafficApp"
 )
 
 type Controller struct{}
@@ -15,8 +15,8 @@ func NewController() *Controller {
 	return &Controller{}
 }
 
-func (Controller) Exec(t *traffic.TrafficFlow, appToController chan []trafficApp.TrafficSignal, controllerToApp chan []trafficApp.TrafficSignal, goalToController chan string) {
-	// instancia os canais
+func (Controller) Exec(t *traffic.TrafficFlow, appToController chan []signalControlApp.TrafficSignal, controllerToApp chan []signalControlApp.TrafficSignal, goalToController chan string) {
+	// cria os canais
 	monitorToAnalyser := make(chan []monitor.Symptom)
 	analyserToPlanner := make(chan analyser.ChangeRequest)
 	plannerToExecute := make(chan planner.Plan)
@@ -27,6 +27,7 @@ func (Controller) Exec(t *traffic.TrafficFlow, appToController chan []trafficApp
 	pln := planner.NewPlanner()
 	exc := executor.NewExecutor()
 
+	// executa os módulos
 	go mon.Exec(appToController, monitorToAnalyser, goalToController, t)
 	go anl.Exec(monitorToAnalyser, analyserToPlanner)
 	go pln.Exec(analyserToPlanner, plannerToExecute)

@@ -2,14 +2,14 @@ package knowledge
 
 import (
 	"semaphores-adaptative/constants"
-	"semaphores-adaptative/trafficApp"
+	"semaphores-adaptative/signalControlApp"
 )
 
 type Knowledge struct {
 	LastDecision            string
 	LastSignalSymptom       map[int]string
 	LastSignalPlan          map[int]string
-	LastSignalConfiguration []trafficApp.TrafficSignal
+	LastSignalConfiguration []signalControlApp.TrafficSignal
 }
 
 var KnowledgeDB = NewKnowledge()
@@ -19,9 +19,9 @@ func NewKnowledge() *Knowledge {
 	p := make(map[int]string, constants.TrafficSignalNumber)
 
 	// inicializa os semáforos com os valores default
-	signals := make([]trafficApp.TrafficSignal, constants.TrafficSignalNumber)
+	signals := make([]signalControlApp.TrafficSignal, constants.TrafficSignalNumber)
 	for i := 0; i < constants.TrafficSignalNumber; i++ {
-		signals[i] = trafficApp.NewTrafficSignal(i)
+		signals[i] = signalControlApp.NewTrafficSignal(i)
 	}
 
 	// inicializa o knowledge com valores default
