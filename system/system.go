@@ -4,16 +4,11 @@ import (
 	//"fmt"
 	"semaphores-adaptative/constants"
 	"semaphores-adaptative/controller"
+	srvcontroller "semaphores-adaptative/controller/server"
 	"semaphores-adaptative/goal"
 	"semaphores-adaptative/signalControlApp"
-	"sync"
-
-	/*"semaphores-adaptative/controller/analyser"
-	"semaphores-adaptative/controller/executor"
-	"semaphores-adaptative/controller/monitor"
-	"semaphores-adaptative/controller/planner"*/
 	"semaphores-adaptative/traffic"
-	//"semaphores-adaptative/signalControlApp"
+	"sync"
 )
 
 func main() {
@@ -27,15 +22,17 @@ func main() {
 
 	// instancia a app, o controller e a componente de configuração da meta
 	trafFlow := traffic.NewTrafficFlow(constants.TrafficSignalNumber)
-	trafSystem := signalControlApp.NewTrafficSignalSystem(constants.TrafficSignalNumber)
+	//trafSystem := signalControlApp.NewTrafficSignalSystem(constants.TrafficSignalNumber)
 	gl := goal.NewGoalConfiguration()
 	ctl := controller.NewController()
+	srv := srvcontroller.NewControllerSrv()
 
 	// executa os componentes
 	wg.Add(8)
 	go trafFlow.Exec()
-	go trafSystem.Exec(appToMonitor, executeToApp)
+	//go trafSystem.Exec(appToMonitor, executeToApp)
 	go gl.Exec(goalToMonitor)
 	go ctl.Exec(trafFlow, appToMonitor, executeToApp, goalToMonitor)
+	go srv.Run(appToMonitor, executeToApp)
 	wg.Wait()
 }

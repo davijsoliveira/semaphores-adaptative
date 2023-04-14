@@ -8,19 +8,23 @@ Date: 06/03/2023
 package signalControlApp
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
-	"net"
 	"semaphores-adaptative/constants"
 )
 
 // tipo semáforo
+//type TrafficSignal struct {
+//	Id         int
+//	TimeGreen  int
+//	TimeYellow int
+//	TimeRed    int
+//}
+
 type TrafficSignal struct {
-	Id         int
-	TimeGreen  int
-	TimeYellow int
-	TimeRed    int
+	Id         int `json:"id"`
+	TimeGreen  int `json:"timegreen"`
+	TimeYellow int `json:"timeyellow"`
+	TimeRed    int `json:"timered"`
 }
 
 // tipo sistema de semáforos
@@ -49,18 +53,16 @@ func NewTrafficSignalSystem(num int) *TrafficSignalSystem {
 func (s *TrafficSignalSystem) Exec(toMonitor chan []TrafficSignal, fromExecutor chan []TrafficSignal) {
 	for {
 		toMonitor <- s.TrafficSignals
-		conn, err := net.Dial("tcp", "localhost:8080")
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer conn.Close()
 
-		// Envia a mensagem ao servidor
-		//msg := Message{Text: "Olá, servidor!"}
-		encoder := json.NewEncoder(conn)
-		if err := encoder.Encode(s.TrafficSignals); err != nil {
-			log.Fatal(err)
-		}
+		//conn, err := net.Dial("tcp", "localhost:8080")
+		//if err != nil {
+		//	log.Fatal(err)
+		//}
+		//defer conn.Close()
+		//encoder := json.NewEncoder(conn)
+		//if err := encoder.Encode(s.TrafficSignals); err != nil {
+		//	log.Fatal(err)
+		//}
 		ts := <-fromExecutor
 
 		// itera sobre os semáforos alterados e os pertencentes ao sistema para aplicar as alterações
