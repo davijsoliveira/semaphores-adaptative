@@ -1,3 +1,10 @@
+/*
+***********************************************************************************************************************************************************
+Author: Davi Oliveira
+Description: This code implements a simple MAPE-K for traffic signal timing control. The time of the signal traffic may change according to the traffic flow.
+Date: 06/03/2023
+***********************************************************************************************************************************************************
+*/
 package main
 
 import (
