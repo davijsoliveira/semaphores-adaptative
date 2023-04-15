@@ -51,7 +51,7 @@ func (Analyser) Exec(fromMonitor chan []monitor.Symptom, toPlanner chan ChangeRe
 		// contabiliza os semáforos com baixo, médio e intenso congestionamento
 		for _, sympton := range s {
 			switch {
-			case sympton.CongestionRate == constants.Low && knowledge.KnowledgeDB.LastSignalSymptom[sympton.SemaphoreID] != constants.Low:
+			case sympton.CongestionRate == constants.Low:
 				numLow++
 			case sympton.CongestionRate == constants.Medium:
 				numMedium++
