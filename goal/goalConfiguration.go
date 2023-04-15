@@ -3,6 +3,7 @@ package goal
 import (
 	"fmt"
 	"semaphores-adaptative/constants"
+	"strings"
 )
 
 type GoalConfiguration struct{}
@@ -28,7 +29,9 @@ func (GoalConfiguration) Exec(toMonitor chan string) {
 				goal = constants.GoalLowCongestion
 			}
 		}
-		fmt.Println("************************ A META ATUAL É:", goal)
+		fmt.Println("")
+		fmt.Println("************************ A Meta Atual é:", strings.ToUpper(goal), "****************************")
+		fmt.Println("")
 		toMonitor <- goal
 	}
 }

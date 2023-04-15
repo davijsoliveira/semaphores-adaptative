@@ -17,12 +17,11 @@ func main() {
 
 	// cria os canais
 	appToMonitor := make(chan []signalControlApp.TrafficSignal)
-	goalToMonitor := make(chan string)
+	goalToController := make(chan string)
 	executeToApp := make(chan []signalControlApp.TrafficSignal)
 
-	// instancia a app, o controller e a componente de configuração da meta
+	// instancia o ambiente, o componente de configuração da meta, o controller e o frontend
 	trafFlow := traffic.NewTrafficFlow(constants.TrafficSignalNumber)
-	//trafSystem := signalControlApp.NewTrafficSignalSystem(constants.TrafficSignalNumber)
 	gl := goal.NewGoalConfiguration()
 	ctl := controller.NewController()
 	srv := srvcontroller.NewControllerSrv()
@@ -30,9 +29,8 @@ func main() {
 	// executa os componentes
 	wg.Add(8)
 	go trafFlow.Exec()
-	//go trafSystem.Exec(appToMonitor, executeToApp)
-	go gl.Exec(goalToMonitor)
-	go ctl.Exec(trafFlow, appToMonitor, executeToApp, goalToMonitor)
+	go gl.Exec(goalToController)
+	go ctl.Exec(trafFlow, appToMonitor, executeToApp, goalToController)
 	go srv.Run(appToMonitor, executeToApp)
 	wg.Wait()
 }

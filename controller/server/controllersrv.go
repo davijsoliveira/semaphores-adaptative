@@ -2,6 +2,7 @@ package srvcontroller
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net"
 	"semaphores-adaptative/signalControlApp"
@@ -16,7 +17,7 @@ func NewControllerSrv() *ControllerSrv {
 func HandleConnection(conn net.Conn, toMonitor chan []signalControlApp.TrafficSignal, fromExecutor chan []signalControlApp.TrafficSignal) {
 	defer conn.Close()
 
-	// Lê a mensagem enviada pelo cliente
+	// recebe os dados dos sinais de trânsito
 	decoder := json.NewDecoder(conn)
 	//var msg Message
 	var signals []signalControlApp.TrafficSignal
@@ -25,39 +26,37 @@ func HandleConnection(conn net.Conn, toMonitor chan []signalControlApp.TrafficSi
 		return
 	}
 
-	// repassa para o monitor
+	// envia os dados para o monitor
 	toMonitor <- signals
+
+	// recebe do executor a nova configuração dos sinais
 	ts := <-fromExecutor
 
-	// Responde com uma mensagem de confirmação
+	// envia para o agente a nova configuração dos sinais
 	encoder := json.NewEncoder(conn)
 	if err := encoder.Encode(ts); err != nil {
 		log.Println(err)
 		return
 	}
-
-	// Imprime a mensagem recebida
-	//for _, signal := range signals {
-	//	fmt.Printf("ID: %d, Verde: %d, Amarelo: %d, Vermelho: %d\n", signal.Id, signal.TimeGreen, signal.TimeYellow, signal.TimeRed)
-	//}
 }
 
 func (ControllerSrv) Run(toMonitor chan []signalControlApp.TrafficSignal, fromExecutor chan []signalControlApp.TrafficSignal) {
 	listener, err := net.Listen("tcp", ":8080")
+	fmt.Println("Running Frontend on port 8080............")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer listener.Close()
 
 	for {
-		// Aceita a conexão do cliente
+		// recebe as conexões do agente
 		conn, err := listener.Accept()
 		if err != nil {
 			log.Println(err)
 			continue
 		}
 
-		// Lida com a mensagem recebida
+		// encaminha os dados da conexão para processamento no MAPE-K
 		go HandleConnection(conn, toMonitor, fromExecutor)
 	}
 }

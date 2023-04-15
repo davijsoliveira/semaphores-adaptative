@@ -1,12 +1,11 @@
 package monitor
 
 import (
-	"fmt"
 	"semaphores-adaptative/commons"
 	"semaphores-adaptative/constants"
+	"semaphores-adaptative/controller/knowledge"
 	"semaphores-adaptative/signalControlApp"
 	"semaphores-adaptative/traffic"
-	"time"
 )
 
 // tipo monitor
@@ -47,8 +46,8 @@ func NewMonitor() *Monitor {
 // executa o monitor
 func (Monitor) Exec(fromTrafficApp chan []signalControlApp.TrafficSignal, toAnalyser chan []Symptom, fromGoalConfiguration chan string, flow *traffic.TrafficFlow) {
 	for {
-		// interval para monitor coletar os dados de congestionamento
-		time.Sleep(10 * time.Second)
+		// intervalo para monitor coletar os dados de congestionamento
+		//time.Sleep(10 * time.Second)
 
 		ta := <-fromTrafficApp
 
@@ -72,18 +71,11 @@ func (Monitor) Exec(fromTrafficApp chan []signalControlApp.TrafficSignal, toAnal
 			}
 			Symptoms.SymptomsGroup[i].SemaphoreID = i
 			Symptoms.SymptomsGroup[i].CurrentRate = trafficFlowRate.TrafficPerSemaphore[i]
-			//Symptoms.SymptomsGroup[i].TimeGreen = knowledge.KnowledgeDB.LastSignalConfiguration[i].TimeGreen
 			Symptoms.SymptomsGroup[i].TimeGreen = ta[i].TimeGreen
-			//Symptoms.SymptomsGroup[i].TimeYellow = knowledge.KnowledgeDB.LastSignalConfiguration[i].TimeYellow
 			Symptoms.SymptomsGroup[i].TimeYellow = ta[i].TimeYellow
-			//Symptoms.SymptomsGroup[i].TimeRed = knowledge.KnowledgeDB.LastSignalConfiguration[i].TimeRed
 			Symptoms.SymptomsGroup[i].TimeRed = ta[i].TimeRed
+			knowledge.KnowledgeDB.LastSignalSymptom[i] = Symptoms.SymptomsGroup[i].CongestionRate
 		}
-		fmt.Println("################### MONITOR #########################################################")
-		fmt.Println("Semáforo", 0, " tem o seguinte sintoma: ", Symptoms.SymptomsGroup[0].CongestionRate)
-		fmt.Println("Semáforo", 1, " tem o seguinte sintoma: ", Symptoms.SymptomsGroup[1].CongestionRate)
-		fmt.Println("Semáforo", 2, " tem o seguinte sintoma: ", Symptoms.SymptomsGroup[2].CongestionRate)
-		fmt.Println("#####################################################################################")
 		toAnalyser <- Symptoms.SymptomsGroup
 	}
 

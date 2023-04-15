@@ -1,7 +1,6 @@
 package executor
 
 import (
-	"fmt"
 	"semaphores-adaptative/controller/knowledge"
 	"semaphores-adaptative/controller/planner"
 	"semaphores-adaptative/signalControlApp"
@@ -19,7 +18,6 @@ func NewExecutor() *Executor {
 func (Executor) Exec(fromPlanner chan planner.Plan, toTrafficApp chan []signalControlApp.TrafficSignal) {
 	for {
 		p := <-fromPlanner
-		fmt.Println("################### EXECUTOR ##########################################################")
 		for _, signal := range p.TrafficSignals {
 			for i, trafficSignal := range knowledge.KnowledgeDB.LastSignalConfiguration {
 				if signal.Id == trafficSignal.Id {
@@ -29,13 +27,6 @@ func (Executor) Exec(fromPlanner chan planner.Plan, toTrafficApp chan []signalCo
 				}
 			}
 		}
-
-		/*for _, v := range knowledge.KnowledgeDB.LastSignalConfiguration {
-			fmt.Println("O semáforo de ID:", v.Id, "tem como último valor para o verde:", v.TimeGreen)
-			fmt.Println("O semáforo de ID:", v.Id, "tem como último valor para o amarelo:", v.TimeYellow)
-			fmt.Println("O semáforo de ID:", v.Id, "tem como último valor para o vermelho:", v.TimeRed)
-		}
-		fmt.Println("######################################################################################")*/
 		toTrafficApp <- p.TrafficSignals
 
 	}

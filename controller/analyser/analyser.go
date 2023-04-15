@@ -7,6 +7,7 @@ import (
 	"semaphores-adaptative/constants"
 	"semaphores-adaptative/controller/knowledge"
 	"semaphores-adaptative/controller/monitor"
+	"strings"
 )
 
 // tipo analisador
@@ -59,7 +60,7 @@ func (Analyser) Exec(fromMonitor chan []monitor.Symptom, toPlanner chan ChangeRe
 				numIntensive++
 				change.SemaphoresAffects = append(change.SemaphoresAffects, sympton.SemaphoreID)
 			}
-			knowledge.KnowledgeDB.LastSignalSymptom[sympton.SemaphoreID] = sympton.CongestionRate
+			//knowledge.KnowledgeDB.LastSignalSymptom[sympton.SemaphoreID] = sympton.CongestionRate
 		}
 
 		// calcula a porcentagem de semáforos com congestionamento médio ou intenso
@@ -152,7 +153,7 @@ func (Analyser) Exec(fromMonitor chan []monitor.Symptom, toPlanner chan ChangeRe
 		fmt.Println("O número de semáforos com congestionamento médio:", numMedium)
 		fmt.Println("O número de semáforos com congestionamento intenso:", numIntensive)
 		fmt.Println("Os semáforos afetados foram:", change.SemaphoresAffects)
-		fmt.Println("A decisão foi de:", change.Decision)
+		fmt.Println("A decisão foi de:", strings.ToUpper(change.Decision))
 		fmt.Println("######################################################################################")
 
 		toPlanner <- *change
