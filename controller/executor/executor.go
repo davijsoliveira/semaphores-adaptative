@@ -1,9 +1,9 @@
 package executor
 
 import (
+	"semaphores-adaptative/commons"
 	"semaphores-adaptative/controller/knowledge"
 	"semaphores-adaptative/controller/planner"
-	"semaphores-adaptative/signalControlApp"
 )
 
 // tipo executor
@@ -15,7 +15,7 @@ func NewExecutor() *Executor {
 }
 
 // repassa para a aplicação os semáforos que devem ter seu tempo alterado
-func (Executor) Exec(fromPlanner chan planner.Plan, toTrafficApp chan []signalControlApp.TrafficSignal) {
+func (Executor) Exec(fromPlanner chan planner.Plan, toTrafficApp chan []commons.TrafficSignal) {
 	for {
 		p := <-fromPlanner
 		for _, signal := range p.TrafficSignals {

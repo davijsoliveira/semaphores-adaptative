@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"semaphores-adaptative/signalControlApp"
+	"semaphores-adaptative/commons"
 )
 
 type ControllerSrv struct{}
@@ -14,13 +14,13 @@ func NewControllerSrv() *ControllerSrv {
 	return &ControllerSrv{}
 }
 
-func HandleConnection(conn net.Conn, toMonitor chan []signalControlApp.TrafficSignal, fromExecutor chan []signalControlApp.TrafficSignal) {
+func HandleConnection(conn net.Conn, toMonitor chan []commons.TrafficSignal, fromExecutor chan []commons.TrafficSignal) {
 	defer conn.Close()
 
 	// recebe os dados dos sinais de trânsito
 	decoder := json.NewDecoder(conn)
 	//var msg Message
-	var signals []signalControlApp.TrafficSignal
+	var signals []commons.TrafficSignal
 	if err := decoder.Decode(&signals); err != nil {
 		log.Println(err)
 		return
@@ -40,7 +40,7 @@ func HandleConnection(conn net.Conn, toMonitor chan []signalControlApp.TrafficSi
 	}
 }
 
-func (ControllerSrv) Run(toMonitor chan []signalControlApp.TrafficSignal, fromExecutor chan []signalControlApp.TrafficSignal) {
+func (ControllerSrv) Run(toMonitor chan []commons.TrafficSignal, fromExecutor chan []commons.TrafficSignal) {
 	listener, err := net.Listen("tcp", ":8080")
 	fmt.Println("Running Frontend on port 8080............")
 	if err != nil {

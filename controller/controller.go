@@ -1,11 +1,12 @@
 package controller
 
 import (
+	"semaphores-adaptative/commons"
 	"semaphores-adaptative/controller/analyser"
 	"semaphores-adaptative/controller/executor"
 	"semaphores-adaptative/controller/monitor"
 	"semaphores-adaptative/controller/planner"
-	"semaphores-adaptative/signalControlApp"
+	//"semaphores-adaptative/signalControl"
 	"semaphores-adaptative/traffic"
 )
 
@@ -15,7 +16,7 @@ func NewController() *Controller {
 	return &Controller{}
 }
 
-func (Controller) Exec(t *traffic.TrafficFlow, appToController chan []signalControlApp.TrafficSignal, controllerToApp chan []signalControlApp.TrafficSignal, goalToController chan string) {
+func (Controller) Exec(t *traffic.TrafficFlow, appToController chan []commons.TrafficSignal, controllerToApp chan []commons.TrafficSignal, goalToController chan string) {
 	// cria os canais
 	monitorToAnalyser := make(chan []monitor.Symptom)
 	analyserToPlanner := make(chan analyser.ChangeRequest)
