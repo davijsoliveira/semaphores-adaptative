@@ -9,6 +9,7 @@ type TrafficSignal struct {
 	TimeGreen  int `json:"timegreen"`
 	TimeYellow int `json:"timeyellow"`
 	TimeRed    int `json:"timered"`
+	Congestion int `json:"congestion"`
 }
 
 // instancia um semáforo

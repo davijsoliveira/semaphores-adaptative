@@ -4,7 +4,6 @@ import (
 	"semaphores-adaptative/commons"
 	"semaphores-adaptative/constants"
 	"semaphores-adaptative/controller/knowledge"
-	"semaphores-adaptative/traffic"
 )
 
 // tipo monitor
@@ -43,38 +42,35 @@ func NewMonitor() *Monitor {
 }
 
 // executa o monitor
-func (Monitor) Exec(fromTrafficApp chan []commons.TrafficSignal, toAnalyser chan []Symptom, fromGoalConfiguration chan string, flow *traffic.TrafficFlow) {
+func (Monitor) Exec(fromTrafficApp chan []commons.TrafficSignal, toAnalyser chan []Symptom, fromGoalConfiguration chan string) {
 	for {
-		// intervalo para monitor coletar os dados de congestionamento
-		//time.Sleep(10 * time.Second)
-
+		// recebe as informações dos sinais enviadas pelo agente e recebidas pelo frontend
 		ta := <-fromTrafficApp
 
+		// recebe a meta gerada dinâmicamente
 		g := <-fromGoalConfiguration
-
 		commons.Goal = g
 
-		// coleta dos dados de congestionamento
-		trafficFlowRate := flow.Sense()
-
-		// Gera o sintoma de cada semáforo, verificando os semáforos que tem tráfego baixo/médio/intenso
+		// gera um sintoma para cada sinal
 		Symptoms := NewSymptoms(constants.TrafficSignalNumber)
 		for i := 0; i < constants.TrafficSignalNumber; i++ {
 			switch {
-			case trafficFlowRate.TrafficPerSemaphore[i] <= 10:
+			case ta[i].Congestion <= 10:
 				Symptoms.SymptomsGroup[i].CongestionRate = constants.Low
-			case trafficFlowRate.TrafficPerSemaphore[i] <= 20 && trafficFlowRate.TrafficPerSemaphore[i] > 10:
+			case ta[i].Congestion <= 20 && ta[i].Congestion > 10:
 				Symptoms.SymptomsGroup[i].CongestionRate = constants.Medium
-			case trafficFlowRate.TrafficPerSemaphore[i] > 20:
+			case ta[i].Congestion > 20:
 				Symptoms.SymptomsGroup[i].CongestionRate = constants.Intense
 			}
 			Symptoms.SymptomsGroup[i].SemaphoreID = i
-			Symptoms.SymptomsGroup[i].CurrentRate = trafficFlowRate.TrafficPerSemaphore[i]
+			Symptoms.SymptomsGroup[i].CurrentRate = ta[i].Congestion
 			Symptoms.SymptomsGroup[i].TimeGreen = ta[i].TimeGreen
 			Symptoms.SymptomsGroup[i].TimeYellow = ta[i].TimeYellow
 			Symptoms.SymptomsGroup[i].TimeRed = ta[i].TimeRed
 			knowledge.KnowledgeDB.LastSignalSymptom[i] = Symptoms.SymptomsGroup[i].CongestionRate
 		}
+
+		// envia para o analisador o sintoma dos sinais
 		toAnalyser <- Symptoms.SymptomsGroup
 	}
 
