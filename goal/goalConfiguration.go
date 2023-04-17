@@ -12,7 +12,7 @@ func NewGoalConfiguration() *GoalConfiguration {
 	return &GoalConfiguration{}
 }
 
-func (GoalConfiguration) Exec(toMonitor chan string) {
+func (GoalConfiguration) Exec(toController chan string) {
 	iterations := 0
 	goal := constants.GoalLowCongestion
 	for {
@@ -32,6 +32,6 @@ func (GoalConfiguration) Exec(toMonitor chan string) {
 		fmt.Println("")
 		fmt.Println("************************ A Meta Atual é:", strings.ToUpper(goal), "****************************")
 		fmt.Println("")
-		toMonitor <- goal
+		toController <- goal
 	}
 }

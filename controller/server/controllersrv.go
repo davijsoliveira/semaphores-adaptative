@@ -14,7 +14,7 @@ func NewControllerSrv() *ControllerSrv {
 	return &ControllerSrv{}
 }
 
-func HandleConnection(conn net.Conn, toMonitor chan []commons.TrafficSignal, fromExecutor chan []commons.TrafficSignal) {
+func HandleConnection(conn net.Conn, toController, fromController chan []commons.TrafficSignal) {
 	defer conn.Close()
 
 	// recebe os dados dos sinais de trânsito
@@ -27,10 +27,10 @@ func HandleConnection(conn net.Conn, toMonitor chan []commons.TrafficSignal, fro
 	}
 
 	// envia os dados para o monitor
-	toMonitor <- signals
+	toController <- signals
 
 	// recebe do executor a nova configuração dos sinais
-	ts := <-fromExecutor
+	ts := <-fromController
 
 	// envia para o agente a nova configuração dos sinais
 	encoder := json.NewEncoder(conn)
@@ -40,7 +40,7 @@ func HandleConnection(conn net.Conn, toMonitor chan []commons.TrafficSignal, fro
 	}
 }
 
-func (ControllerSrv) Run(toMonitor chan []commons.TrafficSignal, fromExecutor chan []commons.TrafficSignal) {
+func (ControllerSrv) Run(toController chan []commons.TrafficSignal, fromController chan []commons.TrafficSignal) {
 	listener, err := net.Listen("tcp", ":8080")
 	fmt.Println("Running Frontend on port 8080............")
 	if err != nil {
@@ -57,6 +57,6 @@ func (ControllerSrv) Run(toMonitor chan []commons.TrafficSignal, fromExecutor ch
 		}
 
 		// encaminha os dados da conexão para processamento no MAPE-K
-		go HandleConnection(conn, toMonitor, fromExecutor)
+		go HandleConnection(conn, toController, fromController)
 	}
 }

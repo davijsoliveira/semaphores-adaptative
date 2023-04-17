@@ -28,6 +28,5 @@ func (Executor) Exec(fromPlanner chan planner.Plan, toTrafficApp chan []commons.
 			}
 		}
 		toTrafficApp <- p.TrafficSignals
-
 	}
 }
