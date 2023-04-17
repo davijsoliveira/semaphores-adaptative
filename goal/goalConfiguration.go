@@ -16,7 +16,7 @@ func (GoalConfiguration) Exec(toController chan string) {
 	iterations := 0
 	goal := constants.GoalLowCongestion
 	for {
-		if iterations < 5 {
+		if iterations < 10 {
 			iterations++
 		} else {
 			iterations = 0
