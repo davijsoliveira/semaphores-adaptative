@@ -39,3 +39,6 @@ const GoalLowCongestionP3 = "GoalLowCongestionP3"
 const GoalMediumCongestionP1 = "GoalMediumCongestionP1"
 const GoalMediumCongestionP2 = "GoalMediumCongestionP2"
 const GoalMediumCongestionP3 = "GoalMediumCongestionP3"
+
+const UrlGet = "http://configurator-svc/traffic-signals-current"
+const UrlPost = "http://configurator-svc/traffic-signals-update"
