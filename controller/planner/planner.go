@@ -13,7 +13,7 @@ type Planner struct{}
 // tipo plano de mudança
 type Plan struct {
 	Decision       string
-	TrafficSignals []commons.TrafficSignal
+	TrafficSignals []commons.TrafficSignal `json:"trafficsignals"`
 }
 
 func NewPlan() *Plan {

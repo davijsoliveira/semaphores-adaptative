@@ -34,6 +34,7 @@ func main() {
 	wg.Add(7)
 	go gl.Exec(goalToController)
 	go ctl.Exec(appToMonitor, executeToApp, goalToController)
-	go srv.Run(appToMonitor, executeToApp)
+	//go srv.Run(appToMonitor, executeToApp)
+	go srv.HandleConnection(appToMonitor, executeToApp)
 	wg.Wait()
 }
